@@ -1,0 +1,7 @@
+# Asterisk to match directories anywhere in the repository.
+**/target/
+**/.idea
+**/*.iml
+**/.classpath
+**/.project
+**/.settings

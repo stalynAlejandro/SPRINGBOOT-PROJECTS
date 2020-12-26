@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="row mt-3" th:fragment="tablasTareasIndividuales (tareas)">
+    <div class="col">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Tarea</th>
+                <th>Inicio</th>
+                <th>Fin Estimado</th>
+                <th th:if="${tareas.get(0).finalizada}">Duración</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tarea: ${tareas}">
+                <td th:text="${tarea.titulo}"></td>
+                <td th:text="${tarea.fechaInicio}"></td>
+                <td th:text="${tarea.fechaFin}"></td>
+                <th th:if="${tareas.get(0).finalizada}" th:text="${tarea.duracion}"></td>
+                <td>
+                    <button type="button" class="btn btn-primary"
+                            th:attr="onclick=|showDescription('${tarea.titulo}', '${tarea.descripcion}', '${tarea.fechaInicio}', '${tarea.fechaFin}')|"
+                            data-toggle="modal" data-target="#myModal">Descripción
+                    </button>
+
+                    <!-- ACCIONES PARA PENDIENTES -->
+                    <a th:if="${!tarea.finalizada}" class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}">Editar</a>
+                    <a th:if="${!tarea.finalizada}"class="btn btn-success btn-xs" th:href="@{/tareas/{id}/finalizada/{finalizada}(id=${tarea.id}, finalizada=true)}">Terminar</a>
+
+                    <!-- ACCIONES PARA FINALIZADAS -->
+                    <button th:if="${tarea.finalizada}" class="btn btn-danger btn-xs" onmouseover="" style="cursor: pointer;"
+                    th:onclick="'del(\'/tareas/' + ${tarea.id} + '\')'">Borrar</button>
+                    <a th:if="${tarea.finalizada}" class="btn btn-success btn-xs" th:href="@{/tareas/{id}/finalizada/{finalizada}(id=${tarea.id}, finalizada=false)}">Recomenzar</a>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Cuenta')">
+
+    <link th:ref="@{/css/cuentaUsuario.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+
+<nav th:replace="${usuario} ? ~{fragments :: navbar(usuario=${usuario})} : ~{}"></nav>
+
+<div class="container-fluid" style="margin-top: 5%">
+
+    <div class="d-flex">
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png" class="rounded mx-auto d-block" style="width: 20%;">
+        <div class="card" style="width: 50%;margin-right: 10%">
+            <div class="card-header">
+                <h2>Mis Datos</h2>
+            </div>
+            <div class="card-body" style="margin-top: 4%">
+                <div class="d-flex justify-content-between">
+                    <span><strong>Id: </strong> <span th:text="${usuario.id}"></span> </span>
+                    <span><strong>Email: </strong> <span th:text="${usuario.email}"></span> </span>
+                </div>
+                <br><br>
+                <div class="d-flex justify-content-between">
+                    <span><strong>Nombre: </strong> <span th:text="${usuario.nombre}"></span> </span>
+                    <span><strong>Fecha de nacimiento: </strong> <span th:text="${usuario.fechaNacimiento}"></span> </span>
+                </div>
+                <br><br>
+                <div class="d-flex justify-content-end">
+                    <a type="button" href="/usuario/cuenta/editar" class="btn btn-primary"style="margin-right: 1%"> Editar</a>
+                    <button class="btn btn-danger" onmouseover="" style="cursor: pointer;"
+                            th:onclick="'del(\'/usuario/cuenta\')'">Eliminar Cuenta</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="message" style="width: 50%; float: right; margin-right:10%; margin-top: 1%">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${!#strings.isEmpty(mensaje)}">
+            <span th:text="${mensaje}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+
+</div>
+
+<div th:replace="fragments::javascript"/>
+<script type="text/javascript">
+    function del(urlBorrar) {
+        if (confirm('¿Estás seguro/a de que quieres borrar la cuenta?\n' +
+            'Se borrarán todas tus tareas y equipos administrados')) {
+            $.ajax({
+                url: urlBorrar,
+                type: 'DELETE',
+                success: function (results) {
+                    //refresh the page
+                    console.log('Borrada Cuenta');
+                    location.href = "/login";
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

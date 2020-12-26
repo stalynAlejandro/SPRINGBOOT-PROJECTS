@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Login')"></head>
+<style>
+    /* Your external css file will go here. This is just for testing :) */
+    
+  .mycustombtn{
+    background: #000;
+  }
+
+  .myHeader{
+      background-color: rgb(169, 250, 121);
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      text-align: center;
+  }
+
+  </style>  
+
+<body>
+
+    <nav th:replace="${usuario} ? ~{fragments :: navbar(usuario=${usuario})} : ~{}">
+    </nav>
+
+    <main role="main">
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron myHeader">
+            <div class="container">
+                <h3 class="display-3">Empieza a organizar tus tareas con <strong>TodoList</strong></h3>
+                <!-- <p style="font-size: x-large;">Añade de forma fácil tus propias tareas y fijate objetivos de finalización para ser más productivo. Si tienes un equipo de trabajo
+                    también puedes organizarlo, creando tareas y asignadolas a tus compañeros 
+                </p> -->
+                <p th:if="${usuario} == null"><a class="btn btn-primary btn-lg" href="/login" role="button">Empezar &raquo;</a></p>
+            </div>
+        </div>
+
+        <!-- Marketing messaging and featurettes
+      ================================================== -->
+        <!-- Wrap the rest of the page in another container to center all the content. -->
+
+        <div class="container marketing">
+
+            <!-- Three columns of text below the carousel -->
+            <div class="row">
+                <div class="col-lg-6 ">
+                    <img class="rounded-circle" style="background-color: #FFA;"
+                    src="../static/img/usuario.jpg" th:src="@{img/usuario.jpg}"
+                        alt="Generic placeholder image" width="140" height="140">
+                    <h2>Organízate</h2>
+                    <p>Perfector para crear tus tareas del dia a dia y fijarte objetivos de realización. 
+                        Puedes editarlas en cualquier momento, acabarlas y recomenzarlas si fuera necesario</p>
+                    <!-- <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p> -->
+                </div><!-- /.col-lg-4 -->
+                <div class="col-lg-6">
+                    <img class="rounded-circle" style="background-color: #FFA;"
+                    src="../static/img/equipo.jpg" th:src="@{img/equipo.jpg}"
+                        alt="Generic placeholder image" width="140" height="140">
+                    <h2>Organiza a tu Equipo</h2>
+                    <p>Ideal para cualquier tipo de equipo que realizan un trabajo juntos. Si dirijes el equipo 
+                        puedes asignar tareas a tus compañeros y hacer un seguimiento de las tareas terminadas del equipo.
+                    </p>
+                    <!-- <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p> -->
+                </div><!-- /.col-lg-4 -->
+            </div><!-- /.row -->
+
+
+            <!-- START THE FEATURETTES -->
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading"> Crea tu tablero. <span class="text-muted"> Lo puedes consultar en cualquier momento </span></h2>
+                    <p class="lead">
+                        Tienes la opción crear tus tareas, editarlas, ver su descripción y terminarlas. 
+                        Una vez la terminas puedes ver la duración en dias que se tardó en terminar la tarea y recomenzarla por si hiciera falta. 
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <img class="featurette-image img-fluid mx-auto" src="../static/img/tablero.jpg" th:src="@{img/tablero.jpg}" alt="imagen">
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7 order-md-2">
+                    <h2 class="featurette-heading"> Sigue la progresión del Equipo<span class="text-muted"> Mira en el tablero como avanza tu equipo. </span></h2>
+                    <p class="lead"> Crea tu equipo y se el administrador, asigna tareas y expulsa a un miembro si fuera necesario. Aunque esperamos que 
+                        no tengas que hacerlo. </p>
+                </div>
+                <div class="col-md-5 order-md-1">
+                    <img class="featurette-image img-fluid mx-auto" src="../static/img/tableroEquipo.jpg" th:src="@{img/tableroEquipo.jpg}" alt="imagen">
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading"> Tu cuenta <span class="text-muted">. </span></h2>
+                    <p class="lead">
+                        Personaliza tu cuenta. Cuando quieras puedes cambiar tus datos al instante. 
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <img class="featurette-image img-fluid mx-auto" src="../static/img/cuenta.jpg" th:src="@{img/cuenta.jpg}" alt="imagen">
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <!-- /END THE FEATURETTES -->
+
+        </div><!-- /.container -->
+
+
+        <!-- FOOTER -->
+        <footer class="container">
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2020 Company, Inc. Desarrollado por: Carlos Torralba, Stalyn Alejandro y Víctor Navarro  &middot; <a href="#">Terms</a></p>
+            <p>Versión 1.4.0-SNAPSHOT</p>
+            <p>Fecha de release: 27/11/2020</p>
+        </footer>
+    </main>
+
+
+
+    <div th:replace="fragments::javascript" />
+
+</body>
+
+</html>

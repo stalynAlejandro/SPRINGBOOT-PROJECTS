@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (titulo)">
+    <meta charset="UTF-8" />
+    <title th:text="${titulo}"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<div th:fragment="javascript">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <span th:text="${scripts}"></span>
+</div>
+
+<nav th:fragment="navbar (usuario)" class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+
+                <a class="nav-link" href="/about">
+                    <i class="fa fa-home" aria-hidden="true" style="font-size: large"></i> <span>ToDoList</span>
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+
+                <a class="nav-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">
+                    <i class="fa fa-tasks" aria-hidden="true"></i> <span>Tareas</span>
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item active" th:if="${usuario.getesAdmin()}">
+                <a class="nav-link" href="/usuarios">
+                    <i class="fa fa-users" aria-hidden="true"></i> <span>Usuarios</span>
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/equipos">
+                    <i class="fa fa-trophy" aria-hidden="true"></i> <span>Equipos</span>
+                </a>
+            </li>
+        </ul>
+        <div class="nav-item dropdown" style="...">
+
+            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-user" aria-hidden="true"></i> <span th:text="${usuario.nombre}"></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/usuario/cuenta/">Cuenta</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">Cerrar sesión</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Modal -->
+<div th:fragment="modal" class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle" class="modal-title"></h4>
+            </div>
+            <div id="modalContent" class="modal-body">
+                <h6 id="modalFechaInicio"></h6>
+                <h6 id="modalFechaFin"></h6>
+                <div id="modalDescripcion"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</html>

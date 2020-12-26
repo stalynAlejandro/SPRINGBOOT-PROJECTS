@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Login')"></head>
+
+<body>
+
+<nav th:replace="fragments :: navbar (usuario=${usuario})"/>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h2 class="text-center" th:text="'Modificación de la tarea ' + ${tarea.getId()}"></h2>
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <form method="post" th:action="@{/tareas/{id}/editar(id=${tarea.id})}" th:object="${tareaData}">
+                        <div class="form-group">
+                            <label for="titulo">Título de la tarea:</label>
+                            <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcion">Descripción:</label>
+                            <input class="form-control" id="descripcion" name="descripcion" required th:field="*{descripcion}" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaInicio">Fecha de Inicio</label> 
+                            <input id="fechaInicio" class="form-control" name="fechaNacimiento" type="datetime-local" th:field="*{fechaInicio}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaFin">Fecha Fin</label>
+                            <input id="fechaFin" class="form-control" name="fechaFin" type="datetime-local" th:field="*{fechaFin}"/>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Modificar tarea</button>
+                        <a class="btn btn-link" th:href="@{/usuarios/{id}/tareas(id=${tarea.usuario.id})}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>

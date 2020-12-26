@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Tareas')"></head>
+
+<style>
+
+    .tablas-tareas{
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #117a8b;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+    }
+
+
+</style>
+
+<body>
+
+    <nav th:replace="fragments::navbar (usuario=${usuario})" />
+
+    <div class="container-fluid p-5">
+        <h2 style="text-align:center"> Tareas individuales</h2>
+
+
+        <!--TIENE TAREAS-->
+        <div class="tablas-tareas" th:if="${!tareasPendientes.isEmpty()} or ${!tareasTerminadas.isEmpty()}">
+
+            <!--NO TIENE TAREAS-->
+            <div class="no-tareas" th:if="${tareasPendientes.isEmpty()} and ${tareasTerminadas.isEmpty()}">
+                <h3 style="text-align:center"> Usted no tiene tareas individuales</h3>
+
+            </div>
+
+            <!-- SIN TERMINAR -->
+            <div th:if="${!tareasPendientes.isEmpty()}">
+                <h3 style="text-align:center">Mis Tareas pendientes</h3>
+                <div th:replace="tablasTareasIndividuales::tablasTareasIndividuales (tareas=${tareasPendientes})"></div>
+
+                <!--MENSAJE DE CREACIÓN TAREA-->
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert"
+                             th:if="${!#strings.isEmpty(mensaje)}">
+                            <span th:text="${mensaje}"></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TERMINADAS -->
+            <div th:if="${!tareasTerminadas.isEmpty()}">
+                <h3 style="text-align:center">Mis Tareas Terminadas</h3>
+                <div th:replace="tablasTareasIndividuales::tablasTareasIndividuales (tareas=${tareasTerminadas})"></div>
+
+
+            </div>
+
+
+        </div>
+
+        <p>
+            <a class="btn btn-primary" th:href="@{/usuarios/{id}/tareas/nueva(id=${usuario.id})}"> Nueva tarea</a>
+            <a class="btn btn-link" href="/logout">Salir</a>
+        </p>
+
+        <div>
+            <h2 style="text-align:center"> Tareas de equipo</h2>
+            <!--TAREAS DE EQUIPO PENDIENTES-->
+            <div th:if="${!tareasEnEquiposPendientes.isEmpty()}">
+                <div th:replace="tablasTareasEquipo::tablasTareasEquipo (tareas=${tareasEnEquiposPendientes})"></div>
+            </div>
+
+            <!--EQUIPO DE EQUIPO TERMINADAS-->
+            <div th:if="${!tareasEnEquiposTerminadas.isEmpty()}">
+                <div  th:replace="tablasTareasEquipo::tablasTareasEquipo (tareas=${tareasEnEquiposTerminadas})"></div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div th:replace="fragments::modal"/>
+
+    <div th:replace="fragments::javascript" />
+
+    <!-- Ejemplo de uso de Ajax para lanzar una petición DELETE y borrar una tarea -->
+
+    <script type="text/javascript">
+        function del(urlBorrar) {
+            if (confirm('¿Estás seguro/a de que quieres borrar la tarea?')) {
+                $.ajax({
+                    url: urlBorrar,
+                    type: 'DELETE',
+                    success: function (results) {
+                        //refresh the page
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function showDescription(title, desc, fIni, fFin) {
+            document.getElementById("modalTitle").innerHTML = title;
+            document.getElementById("modalDescripcion").innerHTML = `Descripción: <strong>${desc}</strong>`;
+            document.getElementById("modalFechaInicio").innerHTML = `Fecha de inicio: <strong>${fIni}</strong>`;
+            document.getElementById("modalFechaFin").innerHTML = `Fecha estimada fin: <strong>${fFin}</strong>`;
+        }
+
+    </script>
+</body>
+
+</html>

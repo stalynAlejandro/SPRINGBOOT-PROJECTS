@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Login')"></head>
+
+<body onload="setDate()">
+
+<nav th:replace="fragments::navbar (usuario=${usuario})"/>
+
+<div class="container-fluid">
+
+    <h2 th:text="'Nueva tarea para el usuario ' + ${usuario.getNombre()}"></h2>
+
+    <form method="post" th:action="@{/usuarios/{id}/tareas/nueva(id=${usuario.id})}" th:object="${tareaData}">
+        <div class="col-6">
+        <div class="form-group">
+            <label for="titulo">Título de la tarea:</label>
+            <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
+           
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <input class="form-control" id="descripcion" name="descripcion" required th:field="*{descripcion}" type="text"/>
+        </div>
+        <div class="form-group">
+            <label for="fechaInicio">Fecha de Inicio</label> 
+            <input id="fechaInicio" class="form-control" name="fechaNacimiento" placeholder="01-01-2001" type="datetime-local" th:field="*{fechaInicio}" />
+        </div>
+        <div class="form-group">
+            <label for="fechaFin">Fecha Fin</label>
+            <input id="fechaFin" class="form-control" name="fechaFin" placeholder="01-01-2001" type="datetime-local" th:field="*{fechaFin}"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Crear tarea</button>
+        <a class="btn btn-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Cancelar</a> 
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments::javascript"/>
+    
+</body>
+<script>
+    function setDate(){
+        document.getElementById("fechaInicio").value = curday('-');
+        document.getElementById("fechaFin").value = curday('-');
+    }
+    var curday = function(sp){
+        today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //As January is 0.
+        var yyyy = today.getFullYear();
+
+        if(dd<10) dd='0'+dd;
+        if(mm<10) mm='0'+mm;
+        return (dd+sp+mm+sp+yyyy);
+    };
+</script>
+</html>

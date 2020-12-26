@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Login')"></head>
+
+<body>
+
+    <nav th:replace="${usuario} ? ~{fragments :: navbar(usuario=${usuario})} : ~{}"></nav>
+
+    <div class="container-fluid">
+        <!-- Listado de Miembros del Equipo -->
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="text-align:center" th:text="'Lista de miembros del equipo ' + ${equipo.id} + ', ' + ${equipo.nombre}"></h2>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Nombre</th>
+                        <th th:if="${usuario.id} == ${administrador.id}">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="usuarioEquipo: ${equipo.usuarios}" th:class="${administrador.id == usuarioEquipo.id ? 'table-primary' : ''}">
+                        <td th:text="${usuarioEquipo.id}"></td>
+                        <td th:text="${usuarioEquipo.email}"></td>
+                        <td th:text="${usuarioEquipo.fechaNacimiento}"></td>
+                        <td th:text="${usuarioEquipo.nombre}"></td>
+                        <!-- al administrador no le saldra sobre su file el boton de expulsar -->
+                        <td th:if="(${usuario.id} == ${administrador.id})">
+                            <form method="post" th:action="@{/equipos/{idEquipo}/expulsion/usuario/{idUsuario}(idEquipo=${equipo.id}, idUsuario=${usuarioEquipo.id})}">
+                                <button th:if="${usuarioEquipo.id} != ${administrador.id}" class="btn btn-danger btn-xs" type="submit" th:text="Expulsar">
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Lista de Tareas del Equipo -->
+        <div class="row mt-3" th:if="${tareasEquipoPendientes != null}">
+            <div class="col" th:if="${!tareasEquipoPendientes.isEmpty()}">
+                <h2 style="text-align:center">Lista de Tareas Pendientes del Equipo</h2>
+
+                    <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Inicio</th>
+                            <th>Fin Estimado</th>
+                            <th>Asignado a </th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tarea: ${tareasEquipoPendientes}">
+                            <td th:text="${tarea.titulo}"></td>
+                            <td th:text="${tarea.fechaInicio}"></td>
+                            <td th:text="${tarea.fechaFin}"></td>
+                            <td th:text="${tarea.getAsignadoA().getNombre()}"></td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs"
+                                    th:attr="onclick=|showDescription('${tarea.titulo}', '${tarea.descripcion}', '${tarea.fechaInicio}', '${tarea.fechaFin}')|"
+                                    data-toggle="modal" data-target="#myModal">Descripción
+                                </button>
+                                <a th:if="${!tarea.finalizada} and ${usuario.id} == ${administrador.id} or ${usuario.getesAdmin()}"
+                                   class="btn btn-primary btn-xs" th:href="@{/equipos/{idEquipo}/tarea/{idTarea}/editar(idEquipo=${tarea.getEquipo().getId()},idTarea=${tarea.id})}">Editar
+                                </a>
+                                <button th:if="${tarea.finalizada} and ${usuario.id} == ${administrador.id} or ${usuario.getesAdmin()}"
+                                        class="btn btn-danger btn-xs" onmouseover="" style="cursor: pointer;" th:onclick="'del(\'/equipos/' + ${tarea.getEquipo().getId()} + '/tarea/' + ${tarea.id} + '\')'">Borrar
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+        <div th:if="${usuario.id} == ${administrador.id} or ${usuario.getesAdmin()}">
+            <a class="btn btn-primary" th:href="@{/equipos/{id}/tarea/nueva(id=${equipo.id})}">Crear nueva tarea de equipo</a>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${!#strings.isEmpty(mensaje)}">
+                    <span th:text="${mensaje}"></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3" th:if="${tareasEquipoTerminadas != null}">
+            <div class="col" th:if="${!tareasEquipoTerminadas.isEmpty()}">
+                <h2 style="text-align:center">Lista de Tareas Terminadas del Equipo</h2>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Inicio</th>
+                        <th>Fin Estimado</th>
+                        <th>Asignado a </th>
+                        <th>Duración</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="tarea: ${tareasEquipoTerminadas}">
+                        <td th:text="${tarea.titulo}"></td>
+                        <td th:text="${tarea.fechaInicio}"></td>
+                        <td th:text="${tarea.fechaFin}"></td>
+                        <td th:text="${tarea.getAsignadoA().getNombre()}"></td>
+                        <td th:text="${tarea.duracion}"></td>
+                        <td>
+
+                                <button type="button" class="btn btn-primary btn-xs"
+                                        th:attr="onclick=|showDescription('${tarea.titulo}', '${tarea.descripcion}', '${tarea.fechaInicio}', '${tarea.fechaFin}')|"
+                                        data-toggle="modal" data-target="#myModal">Descripción
+                                </button>
+
+                                <a th:if="${!tarea.finalizada} and ${usuario.id} == ${administrador.id} or ${usuario.getesAdmin()}"
+                                       class="btn btn-primary btn-xs" th:href="@{/equipos/{idEquipo}/tarea/{idTarea}/editar(idEquipo=${tarea.getEquipo().getId()},idTarea=${tarea.id})}">Editar
+                                </a>
+                                <button th:if="${tarea.finalizada} and ${usuario.id} == ${administrador.id} or ${usuario.getesAdmin()}"
+                                            class="btn btn-danger btn-xs" onmouseover="" style="cursor: pointer;"
+                                            th:onclick="'del(\'/equipos/' + ${tarea.getEquipo().getId()} + '/tarea/' + ${tarea.id} + '\')'">Borrar
+                                </button>
+
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:replace="fragments::modal"/>
+
+    <div th:replace="fragments::javascript"/>
+
+    <script type="text/javascript">
+
+        function del(urlBorrar) {
+            if (confirm('¿Estás seguro/a de que quieres borrar la tarea?')) {
+                $.ajax({
+                    url: urlBorrar,
+                    type: 'DELETE',
+                    success: function (results) {
+                        //refresh the page
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function showDescription(title, desc, fIni, fFin) {
+            document.getElementById("modalTitle").innerHTML = title;
+            document.getElementById("modalDescripcion").innerHTML = `Descripción: <strong>${desc}</strong>`;
+            document.getElementById("modalFechaInicio").innerHTML = `Fecha de inicio: <strong>${fIni}</strong>`;
+            document.getElementById("modalFechaFin").innerHTML = `Fecha estimada fin: <strong>${fFin}</strong>`;
+        }
+    </script>
+
+</body>
+</html>

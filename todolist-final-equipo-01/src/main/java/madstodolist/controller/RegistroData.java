@@ -1,0 +1,57 @@
+package madstodolist.controller;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.Email;
+import java.util.Date;
+
+public class RegistroData {
+    @Email
+    private String eMail;
+    private Boolean esAdmin;
+    private Boolean bloqueado;
+    private String password;
+    private String nombre;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date fechaNacimiento;
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
+    }
+
+    public Boolean getEsAdmin(){ return esAdmin; }
+
+    public void setEsAdmin(Boolean esAdmin){ this.esAdmin = esAdmin; }
+
+    public Boolean getBloqueado(){ return bloqueado; }
+
+    public void setBloqueado(Boolean bloq){ this.bloqueado = bloq; }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+}

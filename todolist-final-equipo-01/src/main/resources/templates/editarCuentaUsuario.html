@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Cuenta')">
+
+    <link th:ref="@{/css/cuentaUsuario.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+
+<nav th:replace="${usuario} ? ~{fragments :: navbar(usuario=${usuario})} : ~{}"></nav>
+
+<div class="container-fluid" style="margin-top: 5%">
+
+    <div class="d-flex">
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png" class="rounded mx-auto d-block" style="width: 20%;">
+        <div class="card" style="width: 50%;margin-right: 10%">
+            <div class="card-header">
+                <h2>Editar Mis Datos</h2>
+            </div>
+            <div class="card-body" style="margin-top: 4%">
+                <form method="post" action="/usuario/cuenta/editar" th:object="${registroData}">
+                    <div class="d-flex justify-content-between">
+                        <div class="form-input">
+                            <label><strong>Nombre: </strong></label>
+                            <input type="text" id="nameInput" th:field="*{nombre}" placeholder="Pepe Rodríguez" required/>
+                        </div>
+                        <div class="form-input">
+                            <label><strong>Email: </strong></label>
+                            <input type="email" id="emailInput" th:field="*{eMail}" placeholder="pepe@ua.es" required/>
+                        </div>
+
+                    </div>
+
+                    <br><br>
+                    <div class="d-flex justify-content-between">
+                        <div class="form-input">
+                            <label><strong>Contraseña: </strong></label>
+                            <input type="password" id="passwordInput" th:field="*{password}" required/>
+                        </div>
+                        <div class="form-input">
+                            <label><strong>Fecha de nacimiento: </strong></label>
+                            <input id="fechaNacimiento" placeholder="01-12-2019" type="datetime-local" th:field="*{fechaNacimiento}"/>
+                        </div>
+                    </div>
+
+                    <br><br>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary" type="submit" style="margin-right: 1%;">Editar</button>
+                        <a type="button" href="/usuario/cuenta" class="btn btn-secondary"> Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div th:replace="fragments::javascript"/>
+<script type="text/javascript">
+    function update(urlModificar) {
+        if (confirm('¿Estás seguro/a de que quieres editar los datos de la cuenta?')) {
+            $.ajax({
+                url: urlModificar,
+                type: 'POST',
+                success: function (results) {
+                    //refresh the page
+                    console.log('Cuenta editada');
+                    location.href = "/usuario/cuenta";
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

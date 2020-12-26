@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Login')"></head>
+
+<body>
+
+
+<nav th:replace="${usuario} ? ~{fragments :: navbar(usuario=${usuario})} : ~{}">
+</nav>
+
+<div class="container-fluid">
+
+    <div th:if="${usuario.equiposAdministrados.size() > 0}">
+        <div class="row mt-3">
+            <div class="col">
+                <h2 style="text-align:center" th:text="'Mis equipos administrados'"></h2>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="equipo: ${usuario.equiposAdministrados}">
+                        <td th:text="${equipo.id}"></td>
+                        <td> <a class="btn btn-success pop-top" th:href="@{/equipos/{id}(id=${equipo.id})}" th:text="${equipo.nombre}"></a>
+                        </td>
+                        <td class="btn-group">
+
+                            <div class="btn-group">
+                                <a style="margin-left: 5px" class="btn btn-info" th:href="@{/equipos/{id}/modificacion(id=${equipo.id})}">Modificar nombre</a>
+                                <button class="btn btn-danger" onmouseover="" style="cursor: pointer; margin-left: 5px"
+                                        th:onclick="'del(\'/equipos/' + ${equipo.getId()} + '\')'">Borrar</button>
+                            </div>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <p><a class="btn btn-primary" href="/equipos/nuevo"> Nuevo equipo</a>
+
+
+    <div class="row mt-3">
+        <div class="col">
+            <h2 style="text-align:center" th:text="'Listado de equipos disponibles'"></h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="equipo: ${equipos}" th:if="${!usuario.getEquiposAdministrados().contains(equipo)}">
+                    <td th:text="${equipo.id}"></td>
+                    <td> <a class="btn btn-success pop-top" th:href="@{/equipos/{id}(id=${equipo.id})}" th:text="${equipo.nombre}"></a> <!--th:onclick="|nombresUsuario('${equipo.id}');|"-->
+                    </td>
+                    <td class="btn-group">
+
+                        <!--<a class="btn btn-info" th:action="@{/equipos/{id}/incorporacion(id=${equipo.id})}" th:text="Añadirme"></a>-->
+                        <form th:if="${usuario.id} != ${equipo.getAdmin().id}" method="post" th:action="@{/equipos/{id}/gestionpertenencia(id=${equipo.id})}">
+                            <button type="submit"
+                                    th:class="${!equipo.getUsuarios().contains(usuario)} ? 'btn btn-primary btn-xs' : 'btn btn-warning'"
+                                    th:text="${!equipo.getUsuarios().contains(usuario)} ? 'Añadirme' : 'Eliminarme'">
+                            </button>
+                        </form>
+
+                        <div th:if="${usuario.getesAdmin()}" class="btn-group">
+                            <a style="margin-left: 5px" class="btn btn-info" th:href="@{/equipos/{id}/modificacion(id=${equipo.id})}">Modificar nombre</a>
+                            <button class="btn btn-danger" onmouseover="" style="cursor: pointer; margin-left: 5px"
+                                    th:onclick="'del(\'/equipos/' + ${equipo.getId()} + '\')'">Borrar</button>
+                        </div>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${!#strings.isEmpty(mensaje)}">
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+<script type="text/javascript">
+    function del(urlBorrar) {
+        if (confirm('¿Estás seguro/a de que quieres borrar el equipo?')) {
+            $.ajax({
+                url: urlBorrar,
+                type: 'DELETE',
+                success: function (results) {
+                    //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+
+
+</body>
+</html>

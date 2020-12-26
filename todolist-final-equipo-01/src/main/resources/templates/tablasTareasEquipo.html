@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div style="display: grid; grid-template-columns: 2fr 2fr; " th:fragment="tablasTareasEquipo (tareas)">
+
+    <!-- Listado de mis tareas Equipos clasificadas en cada Equipo -->
+    <div class="row mt-3 p-1"  th:each="entry: ${tareas}">
+        <div class="col" th:if="${entry.value.size()} > 0">
+            <h2 style="text-align:center" th:if="${!entry.value.get(0).finalizada}" th:text="'Mis tareas pendientes en ' + ${entry.key}"></h2>
+            <h2 style="text-align:center" th:if="${entry.value.get(0).finalizada}" th:text="'Mis tareas terminadas en ' + ${entry.key}"></h2>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Tarea</th>
+                    <th>Inicio</th>
+                    <th>Fin Estimado</th>
+                    <th th:if="${entry.value.get(0).finalizada}">Duración</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- tareas que tiene aisgnada en el actual Equipo -->
+                <tr th:each="tarea: ${entry.value}">
+                    <td th:text="${tarea.titulo}"></td>
+                    <td th:text="${tarea.fechaInicio}"></td>
+                    <td th:text="${tarea.fechaFin}"></td>
+                    <td th:if="${entry.value.get(0).finalizada}" th:text="${tarea.duracion}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-xs"
+                                th:attr="onclick=|showDescription('${tarea.titulo}', '${tarea.descripcion}', '${tarea.fechaInicio}', '${tarea.fechaFin}')|"
+                                data-toggle="modal" data-target="#myModal">Descripción
+                        </button>
+                            <!--PENDIENTES-->
+                        <a th:if="${!tarea.finalizada} and ${usuario.id} == ${tarea.getEquipo().getAdmin().getId()} or ${usuario.getesAdmin()}"
+                               class="btn btn-primary btn-xs" th:href="@{/equipos/{idEquipo}/tarea/{idTarea}/editar(idEquipo=${tarea.getEquipo().getId()},idTarea=${tarea.id})}">Editar
+                        </a>
+                            <!--TERMINADAS-->
+                        <button th:if="${tarea.finalizada} and ${usuario.id} == ${tarea.getEquipo().getAdmin().getId()} or ${usuario.getesAdmin()}"
+                                class="btn btn-danger btn-xs" onmouseover="" style="cursor: pointer;"
+                                th:onclick="'del(\'/equipos/' + ${tarea.getEquipo().getId()} + '/tarea/' + ${tarea.id} + '\')'">Borrar
+                        </button>
+
+                        <a th:if="${!tarea.finalizada}"class="btn btn-success btn-xs" th:href="@{/tareas/{id}/finalizada/{finalizada}(id=${tarea.id}, finalizada=true)}">Terminar</a>
+                        <a th:if="${tarea.finalizada}" class="btn btn-success btn-xs" th:href="@{/tareas/{id}/finalizada/{finalizada}(id=${tarea.id}, finalizada=false)}">Recomenzar</a>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${entry.value.size()} == 0">
+                <h4 style="color:#dc1414">Aún no tienes tareas asignadas en este equipo</h4>
+            </div>
+        </div>
+    </div>
+
+</html>
