@@ -155,3 +155,62 @@ de dependencias comunes.
 
 </project>
 ```
+En el panel de Maven de IntelliJ se puede consultar las librerías concretas que se han descargado.
+
+En el fichero de configuración de la aplicación se definen propiedades que configuran distintos aspectos
+de la misma, como la base de datos con la que se va a trabajar o el puerto en el que debe ejecutarse. 
+Conforme necesitemos configurar estas propiedades iremos añadiendo elementos al fichero.
+
+# Fichero `resources/application.properties`
+```
+spring.application.name = demoapp
+```
+
+# Controladores
+
+Los controladores definen el código a ejecutar como respuesta a una petición HTTP. Son clases que se suelen
+colocar en el paquete `controller` y están anotadas con `@Contoller`. 
+
+Vemos un ejemplo en la clase `SaludoController`. 
+
+Fichero *src/main/java/demoapp/controller/SaludoController.java*
+
+```
+package demoapp.controller;
+
+import demoapp.service.SaludoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+@Controller
+public class SaludoController {
+
+    private final SaludoService service;
+
+    @Autowired
+    public SaludoController(SaludoService service) {
+        this.service = service;
+    }
+
+    @RequestMapping("/saludo/{nombre}")
+    public @ResponseBody String saludo(@PathVariable(value="nombre") String nombre) {
+        return service.saluda(nombre);
+    }
+
+}
+
+```
+
+Los métodos en los que se definen las respuestas a las peticiones HTTP están anotados con anotaciones en las
+que se indica el tipo de petición y la URL a la que se responde. 
+
+Por ejemplo, en la clase anterior el método `saludo` contesta a las peticiones dirigidas a la URL 
+`/saludo/Ana`. La cadena `Ana` en la URL es decodificada y pasada en el parámetro `nombre` al método. 
+
+El método devuelve la respuesta HTTP. La anotación `@ResponseBody` construye automáticamente esta respuesta,
+añadiendo como contenido de la misma la cadena devuelta por el servicio. 
+
