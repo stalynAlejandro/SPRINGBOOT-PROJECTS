@@ -161,3 +161,72 @@ public class SaludoController {
 
 }
 ```
+Los métodos en los que se definen las respuestas HTTP están anotados con anotaciones en las que se indica el tipo de petición y la URL a la que se responde. 
+
+Por ejemplo, en la clase anterior el método `saludo` constesta a las peticiones dirigidas a la URL `/saudo/Ana`. La cadena *Ana* en la URL es decodificada y pasada en el parámetro *nombre* al método. 
+
+
+El método devuelve la respuesta HTTP. La anotación *@ResponseBody* construye automáticamente esta respuesta, añadiendo como contenido de la misma la cadena devuelta por el servicio. 
+
+En este caso la respuesta es: 
+```
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 8
+Date: Mon, 02 Sep 2019 14:59:04 GMT
+
+Hola Ana
+```
+
+## Clases de Servicio
+
+Las clases de Servicio implementan la lógica de negocio de la aplicación. Las clases *controller* llaman a las clases servicio, que son las que realmente realizan todo el procesamiento. 
+
+De está forma se separan las responsabilildades. Las clases *controller* se encargan de procesar las peticiones y las respuestas HTTP y las clases de servicio son las que realmente realizan la lógica de negocio y devuelven el contenido de las respuestas. 
+
+La separación de la lógica de negocio en las clases de servicio permite también realizar tests que trabajan sobre objetos JAVA, independientes de los formatos de entrada/salida manejados por los controladores.
+
+Fichero : `src/main/demoapp/service/SaludoService.java`
+```
+package demoapp.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class SaludoService {
+    public String saluda(String nombre) {
+        return "Hola " + nombre;
+    }
+}
+```
+
+## Inyección de dependencias en Spring
+Spring Boot utiliza la anotación *@Autowired* para inyectar en la variable anotada un objeto nuevo del tipo indicado. Se puede definir la anotación en la variable o en el constructor de la clase. 
+
+En los ejemplos anteriores podemos comprobar estas anotaciones. En la aplicación ejemplo se define un controlador y un servicio que devuelve un saludo. El servicio se anota con la anotación *@Service* y esta anotación le indica a SpringBoot que la clase va a poder ser inyectada. 
+
+En el controlador se necesita instanciar un objeto de la clase *SaludoService* y se hace usando inyección de dependencias. En este caso lo hacemos anotando el constructor. 
+
+SpringBoot se encarga de obtener una instancia y de inyectarla en la variable *service* que se pasa como parámetro al constructor. 
+
+Más info: en **Spring Beans and Dependency Injection**
+
+## Alcanze de los objetos inyectados
+Por defecto el alcanze (scope) de todas las anotaciones de Spring (@service, @controller, @component, etc) es un *Singleton*. Existe un única instancia de ese objeto que es la que se inyecta en las variables. 
+
+Al estar funcionando en una aplicación web, el *singleton* que hace de controlador recibirá múltiples peticiones concurrrentemente. Cada petición irá en su propio hilo de Java, por lo que múltiples hilos podrán estar ejecutando el mismo código del controlador. 
+
+Por ello hay que tener cuidado en *no definir variables de instancia múltiples (con estado)* dentro del controlador, porque podrían producirse errores debidos a condiciones de carrera (un hilo modifica la misma variable que otro está leyendo). Es conveniente que todos los *beans* (controladores, servicios, etc.) sean objetos sin estado. 
+
+También es posible definir otros alcances, como **@RequestScope** o **@SessionScope**. En el primer caso se crea una instancia nueva del objeto para cada petición HTTP y en el segundo se crea una instancia nueva en cada sesión HTTP. 
+
+## Test
+En la aplicación de demostración hay varios ejemplos que muestran posibles formas de realizar pruebas en una aplicación SpringBoot. 
+
+SpringBoot incluye el framework **AssertJ** que permite realizar expresiones de prueba con un lenguaje muy expresivo. 
+
+Los test se pueden ejecutar usando el comando típico de Maven:
+> mvn test
+
+O también, usando el comando de Maven Wrapper:
+> ./mnvw  test
