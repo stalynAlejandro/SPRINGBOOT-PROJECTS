@@ -1,13 +1,13 @@
-package com.eureka.client.eurekaclient;
+package com.client.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EurekaClientApplication {
+public class ClientApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EurekaClientApplication.class, args);
+		SpringApplication.run(ClientApplication.class, args);
 	}
 
 }
