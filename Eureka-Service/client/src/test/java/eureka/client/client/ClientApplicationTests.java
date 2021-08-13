@@ -1,4 +1,4 @@
-package com.client.client;
+package eureka.client.client;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
