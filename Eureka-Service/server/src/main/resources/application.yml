@@ -3,7 +3,7 @@ spring:
     name: eurekaserver
 
 server:
-  port: 8761
+  port: 8001
 
 eureka:
   client:
@@ -11,14 +11,6 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8001/eurekaserver
   server:
     waitTimeInMsWhenSyncEmpty: 0    #wait time for subsequent sync
-
-# server.port=8761
-
-# eureka.client.register-with-eureka=false
-# eureka.client.fetch-registry=false
-
-# logging.level.com.netflix.eureka=OFF
-# logging.level.com.netflix.discovery=OFF

@@ -31,4 +31,9 @@ class ServiceInstanceRestController {
 			@PathVariable String applicationName) {
 		return this.discoveryClient.getInstances(applicationName);
 	}
+
+	@RequestMapping("/service")
+	public String serviceString(){
+		return "Call service";
+	}
 }
